@@ -17,8 +17,7 @@ chatbot = ChatBot(
             'response_selection_method': get_random_response,
         }
     ],
-    filters=[get_recent_repeated_responses],
-    language='pt'
+    filters=[get_recent_repeated_responses]
 )
 
 # Treinando o chatbot
@@ -97,5 +96,5 @@ def remove_inconsistent_response(user_input, response):
 
 
 if __name__ == '__main__':
-    app.run(host='::', port=20000)
+    app.run()
 
