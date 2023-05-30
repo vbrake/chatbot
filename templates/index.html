@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dino BOT Beta2</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('form').on('submit', function(event){
+                event.preventDefault();
+
+                if ($('#user_input').prop('disabled')) {
+                    return;  // Não fazer nada se o campo de entrada estiver desabilitado
+                }
+
+                var user_input = $('#user_input').val();
+
+                $.ajax({
+                    url: '/get_response',
+                    type: 'POST',
+                    data: {
+                        user_input: user_input
+                    },
+                    success: function(response){
+
+                        if ($('#user_input').prop('disabled')) {
+                            // Se o campo de entrada estiver desabilitado, não fazer nada
+                            return;
+                        }
+
+                        var feedbackHtml = '<div id="feedback_container"><label for="feedback_input">Dino: Foi uma boa resposta?</label><input type="text" id="feedback_input" placeholder="s ou n"><button id="feedback_button">Enviar feedback</button></div>';
+                        $('#chat_history').append('<div class="message"><span class="user">Você:</span> ' + user_input + '</div>');
+                        $('#chat_history').append('<div class="message"><span class="bot">Dino:</span> ' + response + '</div>');
+                        $('#response_text').val(response);
+                        $('#user_input').prop('disabled', true);
+                        $('#submit_button').prop('disabled', true);
+                        $('#chat_history').append(feedbackHtml);
+                    }
+                });
+            });
+
+            $(document).on('click', '#feedback_button', function(event){
+                event.preventDefault();
+                var feedback = $('#feedback_input').val().toLowerCase();
+                var user_input = $('#user_input').val();
+                var response = $('#response_text').val();
+
+                $.ajax({
+                    url: '/get_feedback',
+                    type: 'POST',
+                    data: {
+                        user_input: user_input,
+                        response: response,
+                        feedback: feedback
+                    },
+                    success: function(){
+                        if (feedback === 'sim' || feedback === 's') {
+                            $('#chat_history').append('<div class="message"><span class="bot">Dino feliz :)</span></div>');
+                        } else {
+                            $('#chat_history').append('<div class="message"><span class="bot">Dino triste :(</span></div>');
+                        }
+
+                        $('#feedback_input').val('');
+                        $('#feedback_container').remove();
+
+                        // Habilitar campo de entrada para digitar nova mensagem
+                        $('#user_input').prop('disabled', false);
+                        $('#submit_button').prop('disabled', false);
+                        $('#user_input').focus();
+                    }
+                });
+            });
+        });
+    </script>
+    <style>
+        .user {
+            color: blue;
+            font-weight: bold;
+        }
+
+        .bot {
+            color: green;
+            font-weight: bold;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>DinoBOT</h1>
+    <div id="chat_container">
+        <div id="chat_history"></div>
+        <form id="user_input_form">
+            <input type="text" id="user_input" placeholder="Digite sua mensagem..." autofocus>
+            <input type="hidden" id="response_text" value="">
+            <input type="submit" id="submit_button" value="Enviar">
+        </form>
+        <div id="response"></div>
+    </div>
+</body>
+</html>
