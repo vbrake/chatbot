@@ -1,2 +1,3 @@
 Flask==2.2.5
 ChatterBot==1.0.8
+spacy==2.1.9
