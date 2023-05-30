@@ -93,8 +93,3 @@ def train_chatbot_with_positive_feedback(user_input, response):
 
 def remove_inconsistent_response(user_input, response):
     chatbot.storage.remove(response)
-
-
-if __name__ == '__main__':
-    app.run()
-
