@@ -17,7 +17,8 @@ chatbot = ChatBot(
             'response_selection_method': get_random_response,
         }
     ],
-    filters=[get_recent_repeated_responses]
+    filters=[get_recent_repeated_responses],
+    language='pt'
 )
 
 # Treinando o chatbot
